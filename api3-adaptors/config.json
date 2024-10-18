@@ -18,7 +18,7 @@
   "network": {
     "chainId": 421614,
     "name": "Arbitrum Sepolia",
-    "rpc": "Your private RPC", 
+    "rpc": "YOUR PRIVATE RPC", 
     "nativeCurrency": {
       "name": "Ether",
       "symbol": "ETH",
