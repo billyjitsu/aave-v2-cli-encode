@@ -153,3 +153,80 @@ This command generates the necessary code for the frontend application. After th
 ```
 yarn frontend:dev
 ```
+
+## Setting up Positions on the Dapp
+When you deploy the adaptor and token contracts, the tokens are minted to the deployer wallet (Wallet nemonic #0).
+
+The distribute script will send 10% of assets to the 2nd wallet in the nemonic (Wallet nemonic #1).  Ensure to send some gas to the wallet as well.
+
+```
+yarn distribute
+```
+The Dapp cannot lend out USDC without having USDC in the contracts to lend out.  This deposit-USDC script will deposit USDC from the deployer wallet.
+
+```
+yarn deposit-USDC
+```
+User (the 2nd Wallet on the numonic), will deposit Mock API3 tokens into the Dapp.
+
+```
+yarn deposit
+```
+User will attempt to borrow USDC tokens now that there is a deposited position.  Can be buggy estimating gas, if it fails use the Dapp interface for full borrow.
+
+```
+yarn borrow
+```
+In the mock oracle, we need to set a price value tha will put a user position in a lower health position.  Update the value and run the updateMockPrice script
+
+```
+yarn updateMockPrice
+```
+Now we are going to switch the oracle source.  This will cause the position to be at an unhealthy borrow position.
+
+```
+yarn change-oracle
+```
+Now the deployer wallet, can liquidate the position since the deployer wallet has a surplus of USDC tokens to pay back the loan.
+
+```
+yarn liquidate
+```
+
+## Using Flashloans
+
+The above scenario works in a testnet environment were we have a surplus of tokens.  In a more realistic environment, we will need to borrow assets via flashloans.
+
+To deploy the liquidation tools.  Change the directory to aave-v2-cli-encode/api3-liquidations
+        
+Run the following script
+```
+yarn deploy:liquidations
+```
+Return to the root directory cd ..
+
+In a flashloan, you request the amount you need to payback the debt but you receive the staked tokens as reward that are different from the tokens you requested for the flashloan.  So you can't pay back the flashloan.  What must be done is the tokens received must be swapped on a dex to swap back to the requested flashloan token so we can payback the loan without error.
+
+The contracts deployed has a dex that guarantess a 10% profit on a swap to ensure that the flashloan goes through.
+To deposit liquidity on the dex, run the following script
+
+```
+yarn dexDeposit
+```
+If you the deposit was not enough, you can add more liquidity with the following script.
+
+```
+yarn deposit-more-tokens
+```
+
+To run the flashloan to do the liquidation, run the following command.  It will calculate the position, see how much can be paid back, request the amount, liquidate, swap and pay back the loan.
+
+```
+yarn contractFlashloan
+```
+
+Once you are done, or if you want to deploy a new instance of the dapp.  We don't want to be bogged down with so many tokens with the same name.  This will burn all the tokens from both wallets.
+
+```
+yarn burntokens
+```
