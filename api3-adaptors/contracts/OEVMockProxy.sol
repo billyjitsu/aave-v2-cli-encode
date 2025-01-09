@@ -5,7 +5,7 @@ import "@api3/contracts/v0.8/interfaces/IProxy.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
-contract MockProxy is ownable {
+contract OEVMockProxy is Ownable {
 
     int224 private VALUE = 999903720000000000; // $1.00 
     uint256 private TIMESTAMP = block.timestamp;
